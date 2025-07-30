@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kita Coffee Customer Services</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <style>
+    .menu-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 12px;
+    }
+    .menu-card {
+      background-color: #fff;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      width: 220px;
+      font-size: 14px;
+    }
+    .menu-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .swiper-container-wrapper {
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <img src="{{ url_for('static', filename='img/logo.jpg') }}" alt="Kita Coffee Logo" class="logo" />
+    <h1>Kita Coffee Customer Services</h1>
+    
+    <div class="chat-box" id="chat-box">
+      <div class="bot-msg">
+        <p>Halo kak! Selamat datang di Kita Coffee ☕</p>
+        <p>Kakak bisa bertanya tentang:</p>
+        <ul>
+          <li>Menu</li>
+          <li>Jam Buka</li>
+          <li>Lokasi</li>
+        </ul>
+        <p><small>Note: Untuk order menu silahkan ketik dengan kalimat mengandung kata <strong>"menu"</strong></small></p>
+      </div>
+      <div id="chat-log"></div>
+    </div>
+
+    <div class="chat-input">
+      <input type="text" id="question" placeholder="Ketik pertanyaan Anda di sini..." />
+      <button onclick="sendQuestion()">Kirim</button>
+    </div>
+  </div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const input = document.getElementById("question");
+    input.addEventListener("keydown", function (event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        sendQuestion();
+      }
+    });
+  });
+
+  async function sendQuestion() {
+    const input = document.getElementById("question");
+    const log = document.getElementById("chat-log");
+    const chatBox = document.getElementById("chat-box");
+    const question = input.value.trim();
+    if (!question) return;
+
+    const userMsg = document.createElement("div");
+    userMsg.className = "user-msg";
+    userMsg.textContent = question;
+    log.appendChild(userMsg);
+    input.value = "";
+
+    const typingMsg = document.createElement("div");
+    typingMsg.className = "bot-msg typing";
+    typingMsg.textContent = "Mengetik.....";
+    typingMsg.id = "typing-msg";
+    log.appendChild(typingMsg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    try {
+      const response = await fetch("/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question })
+      });
+
+      const data = await response.json();
+      document.getElementById("typing-msg").remove();
+
+      const botMsg = document.createElement("div");
+      botMsg.className = "bot-msg";
+      botMsg.innerHTML = `<p>${data.answer}</p>`;
+      log.appendChild(botMsg);
+
+      // ✅ JANGAN HAPUS swiper sebelumnya
+      const menuItems = Array.isArray(data.menu)
+        ? data.menu
+        : (data.menu ? [data.menu] : []);
+
+      if (menuItems.length > 0) {
+        const swiperContainer = document.createElement("div");
+        swiperContainer.className = "swiper-container-wrapper";
+
+        const swiperElement = document.createElement("div");
+        swiperElement.className = "swiper mySwiper";
+
+        swiperElement.innerHTML = `
+          <div class="swiper-wrapper">
+            ${menuItems.map(item => `
+              <div class="swiper-slide">
+                <div class="menu-card">
+                  <img src="${item.image_filename}" alt="${item.name}" />
+                  <div class="menu-info">
+                    <h4>${item.name}</h4>
+                    <p>${item.deksripsi}</p>
+                    <p><strong>Rp ${item.harga.toLocaleString('id-ID')}</strong></p>
+                    <p><em>${item.category}</em></p>
+                    <button class="order-btn" onclick="orderNow('${item.name}', ${item.harga}, '${item.category}')">Order Sekarang</button>
+                  </div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+        `;
+
+        swiperContainer.appendChild(swiperElement);
+        log.appendChild(swiperContainer);
+
+        setTimeout(() => {
+          new Swiper(".mySwiper", {
+            slidesPerView: 'auto',
+            spaceBetween: 16,
+            centeredSlides: true,
+            navigation: {
+              nextEl: ".swiper-button-next",
+              prevEl: ".swiper-button-prev",
+            },
+          });
+        }, 100);
+      }
+
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+    } catch (error) {
+      document.getElementById("typing-msg").remove();
+      const botMsg = document.createElement("div");
+      botMsg.className = "bot-msg";
+      botMsg.textContent = "Maaf, terjadi kesalahan. Coba lagi ya.";
+      log.appendChild(botMsg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+  }
+
+  async function orderNow(name, harga, category) {
+    const log = document.getElementById("chat-log");
+    const chatBox = document.getElementById("chat-box");
+
+    const userMsg = document.createElement("div");
+    userMsg.className = "user-msg";
+    userMsg.textContent = `Saya mau pesan ${name}`;
+    log.appendChild(userMsg);
+
+    const typingMsg = document.createElement("div");
+    typingMsg.className = "bot-msg typing";
+    typingMsg.textContent = "Mengetik.....";
+    typingMsg.id = "typing-msg";
+    log.appendChild(typingMsg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+    const response = await fetch("/ask", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        order_item: name,
+        harga: harga,
+        category: category
+      })
+    });
+
+    const data = await response.json();
+    document.getElementById("typing-msg").remove();
+
+    const botMsg = document.createElement("div");
+    botMsg.className = "bot-msg";
+    botMsg.innerHTML = `<p>${data.answer}</p>`;
+    log.appendChild(botMsg);
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+</script>
+</body>
+</html>

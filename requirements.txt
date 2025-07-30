@@ -1,0 +1,10 @@
+langchain-core
+langchain-ollama
+langchain-chroma
+langchain-huggingface
+langchain-text-splitter
+mysql-connector-python
+sentence-transformers
+chromadb langchain-chroma
+flask
+fuzzy

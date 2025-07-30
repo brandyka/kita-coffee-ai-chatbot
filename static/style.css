@@ -1,0 +1,225 @@
+/* === BODY BLUR BACKGROUND === */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background: black;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: url('/static/img/background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  filter: blur(10px);
+  z-index: -1;
+}
+
+/* === CHAT CONTAINER === */
+.chat-container {
+  background: rgba(0, 0, 0, 0.6);
+  max-width: 600px;
+  width: 90%;
+  padding: 30px;
+  border-radius: 20px;
+  color: white;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.4);
+  z-index: 1;
+}
+
+/* === LOGO === */
+.logo {
+  display: block;
+  margin: 0 auto 10px;
+  height: 60px;
+}
+
+/* === JUDUL === */
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* === CHAT BOX AREA === */
+.chat-box {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  min-height: 200px;
+  max-height: 400px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* === BUBBLE CHAT === */
+.user-msg, .bot-msg {
+  margin: 10px 0;
+  padding: 12px 16px;
+  border-radius: 20px;
+  max-width: 75%;
+  word-wrap: break-word;
+  display: inline-block;
+  font-size: 14px;
+  line-height: 1.4;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.user-msg {
+  background-color: #d2691e;
+  color: #ffffff;
+  align-self: flex-end;
+  border-top-right-radius: 0;
+}
+
+.bot-msg {
+  background-color: #eee;
+  color: #333;
+  align-self: flex-start;
+  border-top-left-radius: 0;
+}
+
+.chat-box > div {
+  display: flex;
+  flex-direction: column;
+  clear: both;
+}
+
+/* Animasi mengetik */
+.typing {
+  background-color: #ddd;
+  color: #888;
+  font-style: italic;
+  animation: blink 1s infinite;
+  border-radius: 20px;
+  padding: 10px 16px;
+  max-width: 70%;
+  float: right;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* === INPUT + BUTTON === */
+.chat-input {
+  display: flex;
+  gap: 10px;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+.chat-input button {
+  padding: 12px 20px;
+  background-color: #d2691e;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.chat-input button:hover {
+  background-color: #b6581b;
+}
+
+/* Scrollbar custom */
+.chat-box::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+/* === MENU CARD (inside chat bubble) === */
+.menu-card {
+  background: white;
+  border-radius: 12px;
+  /* overflow: hidden;*/
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  margin: 10px;
+  max-width: 220px;
+  display: flex;
+  flex-direction: column;
+  /*align-items: center;*/
+}
+
+.menu-card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-top-left-radius: 12px;  
+  border-top-right-radius: 12px; 
+}
+
+.menu-info {
+  padding: 10px;
+  text-align: center;
+  color: #333;
+}
+
+.menu-info h4 {
+  margin: 6px 0 4px;
+  font-size: 16px;
+}
+
+.menu-info p {
+  font-size: 13px;
+  margin: 2px 0;
+}
+
+.order-btn {
+  margin-top: 6px;
+  padding: 8px 14px;
+  background-color: #d2691e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.3s ease;
+}
+
+.order-btn:hover {
+  background-color: #b6581b;
+}
+
+/* Swiper Container */
+.swiper {
+  width: 100%;
+  padding: 20px 0;
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  width: auto;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: white;
+}
