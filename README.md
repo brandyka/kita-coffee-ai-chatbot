@@ -1,83 +1,45 @@
-# Kita Coffee AI Chatbot
+# kita-coffee-ai-chatbot
+AI chatbot for Kita Coffee using Ollama and RAG to answer FAQs and handle orders
+verview:
+This project is an AI-powered chatbot built for Kita Coffee, designed to provide accurate business information and support customer orders via natural conversation. Leveraging Ollama’s LLaMA model and the Retrieval-Augmented Generation (RAG) technique, the chatbot delivers context-aware responses based on real-time data stored in a MySQL database.
 
-Kita Coffee AI Chatbot is an AI-powered customer service system designed to assist customers by answering questions and handling orders through natural conversation. The chatbot leverages a Large Language Model (LLM) combined with Retrieval-Augmented Generation (RAG) to deliver accurate, context-aware responses based on real-time data stored in a MySQL database.
+Key Features:
 
-This project aims to simulate a modern AI-driven café assistant that improves customer experience by providing fast, interactive, and human-like responses while maintaining factual accuracy.
+LLM-based chatbot using Ollama + LLaMA 3.2
 
----
+RAG architecture with ChromaDB to fetch factual answers from internal data (e.g., food & drink menus, cafe info, operational hours)
 
-## Overview
+Live order-taking: users can place orders directly via chat (with product details like name, price, quantity, etc.)
 
-The chatbot integrates multiple AI and data components into a unified system. It uses Ollama’s LLaMA model for generating responses and enhances its accuracy through a RAG pipeline that retrieves relevant information from an internal knowledge base.
+Structured UI for testing built with HTML + Flask
 
-The system is capable of understanding user intent, matching menu items intelligently, and guiding users through a structured ordering process. It is built with a simple web interface using Flask, making it easy to test and deploy.
+Dynamic database integration using MySQL (real-time updates supported)
 
----
+Responses are tailored, interactive, and human-like to enhance customer experience
 
-## Key Features
+Tech Stack:
 
-- **AI-powered chatbot**
-  - Uses Ollama with LLaMA 3.2 model
-  - Generates natural and conversational responses in Indonesian
+Python (Flask)
 
-- **Retrieval-Augmented Generation (RAG)**
-  - Retrieves relevant context from ChromaDB
-  - Ensures responses are based on real café data
+Ollama (LLaMA 3.2)
 
-- **Dynamic knowledge base**
-  - Menu items (food & drinks)
-  - Café information (location, contact)
-  - Operational hours
+LangChain
 
-- **Interactive order system**
-  - Users can place orders directly via chat
-  - Multi-step flow: item → name → address → quantity → confirmation
+ChromaDB (for vector store)
 
-- **Smart matching system**
-  - Fuzzy matching for menu search
-  - Category alias handling (e.g., “kopi” → “coffee”)
+HuggingFace Embeddings (MiniLM-L6-v2)
 
-- **Web-based interface**
-  - Built using Flask and HTML
-  - Displays menu items in card/carousel format
+MySQL
 
----
+HTML/CSS for frontend interface
 
-## Architecture
+Status:
+currently still developing
 
-The system follows a modular architecture combining LLM and retrieval mechanisms:
-
-- User sends a query through the web interface
-- Flask API processes the request
-- LangChain orchestrates prompt + model interaction
-- Retriever fetches relevant context from ChromaDB
-- Ollama (LLM) generates the final response
-- MySQL serves as the primary data source
-
----
-
-## Tech Stack
-
-- **Backend**: Python (Flask)
-- **LLM**: Ollama (LLaMA 3.2)
-- **AI Framework**: LangChain
-- **Embeddings**: HuggingFace (all-MiniLM-L6-v2)
-- **Vector Database**: ChromaDB
-- **Database**: MySQL
-- **Frontend**: HTML, CSS
-
-## Project Overview
-![overview](projectoverview/Menu.png)
-![overview](projectoverview/courselmenu.png)
-![overview](projectoverview/address.png)
-## installation Instruction
-
-- Clone the repository from GitHub  
-- Navigate to the project directory  
-- Open the project in VS Code  
-- Create a virtual environment using:activate the virtual environment:
-    - Windows: venv\Scripts\activate
-    - Mac/Linux: source venv/bin/activate
-- Install all dependencies
-- Import Database file to DBMS
-- Configure the database connection in your Python file (host, user, password, database)
+📁 Demo & Usage Instructions:
+- Clone this repository
+- Open file in Vscode
+- active the "venv" environment
+- import database into your DBMS
+- connect to database.py
+- run main.py
