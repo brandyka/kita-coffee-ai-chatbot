@@ -5,7 +5,6 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from uuid import uuid4
 from database import connect
 
-# --- Dokumentasi dari Database ---
 def food_menu_document():
     conn = connect()
     cursor = conn.cursor(dictionary=True)
@@ -70,15 +69,12 @@ def all_document():
         jam_operasional_document()
     )
 
-# --- Chunking Dokumen ---
 docs = all_document()
 splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
 chunks = splitter.split_documents(docs)
 
-# --- Generate UUIDs unik untuk setiap chunk ---
 chunk_ids = [str(uuid4()) for _ in chunks]
 
-# --- Embedding + Simpan ke ChromaDB dengan ID ---
 embed = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 vectorstore = Chroma.from_documents(
     documents=chunks,

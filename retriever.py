@@ -11,7 +11,6 @@ def get_retriever():
         embedding_function=embeddings
     )
     
-    # Ambil retriever dari vectorstore
     retriever = vectorstore.as_retriever(
         search_type="similarity",       
         search_kwargs={"k": 20}          

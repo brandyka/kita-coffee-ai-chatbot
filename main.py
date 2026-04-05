@@ -5,7 +5,6 @@ from difflib import get_close_matches
 from database import connect
 from retriever import get_retriever
 
-# Inisialisasi Flask & LangChain
 app = Flask(__name__)
 retriever = get_retriever()
 model = OllamaLLM(model="llama3.2")
@@ -33,7 +32,6 @@ Pertanyaan user:
 prompt = ChatPromptTemplate.from_template(template_prompt)
 chain = prompt | model
 
-# Mapping kategori
 CATEGORY_ALIASES = {
     "non coffee": "Non Coffee",
     "kopi": "Coffee",
@@ -45,7 +43,6 @@ CATEGORY_ALIASES = {
     "camilan": "Snack"
 }
 
-# Ambil semua menu
 def get_all_menu():
     conn = connect()
     cursor = conn.cursor(dictionary=True)
@@ -56,7 +53,7 @@ def get_all_menu():
     conn.close()
     return food + drink
 
-# Format ke kartu (carousel)
+
 def format_cards(menu_items):
     return [
         {
@@ -69,14 +66,12 @@ def format_cards(menu_items):
         for item in menu_items
     ]
 
-# Konversi menu ke teks
 def get_menu_as_text():
     return "\n".join(
         f"{item['name']} ({item['category']}): {item['deksripsi']} - Rp{item['harga']:,}"
         for item in get_all_menu()
     )
 
-# Cari menu berdasarkan nama (fuzzy match)
 def find_closest_menu_item(user_input, menu_items):
     user_input = user_input.lower()
     best = None
@@ -88,7 +83,7 @@ def find_closest_menu_item(user_input, menu_items):
             best = item
     return best
 
-# Cari menu relevan berdasarkan keyword
+
 def find_related_menu(keyword):
     keyword = keyword.lower()
     keywords = keyword.split()
@@ -98,7 +93,7 @@ def find_related_menu(keyword):
             matched.append(item)
     return format_cards(matched)
 
-# Match alias kategori
+
 def match_category(user_input):
     user_input = user_input.lower()
     for alias, actual in CATEGORY_ALIASES.items():
@@ -126,7 +121,6 @@ def ask():
     user_id = "default_user"
     session = user_session.get(user_id, {"step": 0})
 
-    # Order Handling Step-by-Step
     if "order_item" in data:
         session.update({
             "item_name": data["order_item"],
@@ -189,7 +183,6 @@ def ask():
             user_session.pop(user_id)
             return jsonify({"answer": "Pesanan dibatalkan ya kak. Kalau mau pesan lagi tinggal klik menu 😁", "menu": []})
 
-    # Cek jika pertanyaan tentang kategori menu
     matched_cat = match_category(q)
     if matched_cat:
         menu_cards = find_by_category(matched_cat)
@@ -197,12 +190,10 @@ def ask():
         response_text = chain.invoke({"context": context, "question": question})
         return jsonify({"answer": response_text, "menu": menu_cards})
 
-    # Pertanyaan umum tentang semua menu
     if any(k in q for k in ["menu", "daftar", "makanan", "minuman", "list", "order", "pesan", "lihat menu", "punya apa aja"]):
         cards = format_cards(get_all_menu())
         return jsonify({"answer": "Berikut menu Kita Coffee ya kak 🍽️", "menu": cards})
 
-    # Deteksi jika pertanyaan mengandung nama item
     all_menu = get_all_menu()
     matched = find_closest_menu_item(q, all_menu)
     matched_card = []
@@ -215,7 +206,7 @@ def ask():
             "category": matched['category']
         }]
 
-    # ==== INTELLIGENT CONTEXT SELECTION ====
+
     non_menu_keywords = ["jam", "lokasi", "alamat", "buka", "tutup", "dimana", "kapan"]
     if matched_card or matched_cat or "menu" in q:
         context = get_menu_as_text()
